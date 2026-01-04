@@ -1,26 +1,39 @@
 import { Routes, Route } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
-import Dashboard from "./Pages/Dashboard";
-import Expenses from "./Pages/Expenses";
-import Reports from "./Pages/Reports";
-import Login from "./Pages/Login";
-import ProtectedRoute from "./Components/ProtectedRoute";
+import Dashboard from "./pages/Dashboard";
+import Expenses from "./pages/Expenses";
+import Reports from "./pages/Reports";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const isAuth = true; // mock auth
   return (
     <Routes>
       <Route element={<AppLayout />}>
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute isAuth={isAuth}>
+            <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
         />
-        <Route path="/expenses" element={<Expenses />} />
-        <Route path="/reports" element={<Reports />} />
+        <Route
+          path="/expenses"
+          element={
+            <ProtectedRoute>
+              <Expenses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>
