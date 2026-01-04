@@ -1,11 +1,18 @@
+import { useContext, useMemo } from "react";
+import ExpenseContext from "../context/ExpenseContext";
+
 function Dashboard() {
+  const { expenses } = useContext(ExpenseContext);
+  const total = useMemo(
+    () => expenses.reduce((s, e) => s + e.amount, 0),
+    [expenses]
+  );
+
   return (
-    <div>
+    <>
       <h1>Dashboard</h1>
-      <p>Total Expenses: ₹12,000</p>
-      <p>This month: ₹3,500</p>
-    </div>
+      <p>Total Expenses: ₹{total}</p>
+    </>
   );
 }
-
 export default Dashboard;

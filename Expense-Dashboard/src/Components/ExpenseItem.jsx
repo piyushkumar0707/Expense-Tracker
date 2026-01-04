@@ -1,21 +1,13 @@
-function ExpenseItem({ expense, deleteExpense }) {
+import { useContext } from "react";
+import ExpenseContext from "../context/ExpenseContext";
+
+function ExpenseItem({ expense }) {
+  const { deleteExpense } = useContext(ExpenseContext);
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginBottom: "8px"
-      }}
-    >
-      <h4>{expense.title}</h4>
-      <p>₹{expense.amount}</p>
-      <small>{expense.category}</small>
-      <br />
-      <button onClick={() => deleteExpense(expense.id)}>
-        Delete
-      </button>
+    <div>
+      <strong>{expense.title}</strong> — ₹{expense.amount}
+      <button onClick={() => deleteExpense(expense.id)}>Delete</button>
     </div>
   );
 }
-
 export default ExpenseItem;

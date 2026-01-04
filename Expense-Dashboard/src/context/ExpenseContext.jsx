@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useMemo } from "react";
 
 const ExpenseContext = createContext();
 
@@ -12,18 +12,20 @@ export function ExpenseProvider({ children }) {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
 
-  const addExpense = (expense) => {
-    setExpenses([...expenses, expense]);
-  };
+  const addExpense = (expense) =>
+    setExpenses((prev) => [...prev, expense]);
 
-  const deleteExpense = (id) => {
-    setExpenses(expenses.filter((e) => e.id !== id));
-  };
+  const deleteExpense = (id) =>
+    setExpenses((prev) => prev.filter((e) => e.id !== id));
+
+  // memoize to avoid unnecessary re-renders
+  const value = useMemo(
+    () => ({ expenses, addExpense, deleteExpense }),
+    [expenses]
+  );
 
   return (
-    <ExpenseContext.Provider
-      value={{ expenses, addExpense, deleteExpense }}
-    >
+    <ExpenseContext.Provider value={value}>
       {children}
     </ExpenseContext.Provider>
   );
