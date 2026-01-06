@@ -1,5 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { mockLogin } from "./mockBackend";
+import { decodeToken, isTokenExpired } from "./tokenUtils";
 
 const AuthContext = createContext();
 
@@ -10,11 +11,21 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const isAuth = !!token;
+  const isAuth = !!token && !isTokenExpired(token);
+
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+  };
 
   const login = async (email, password) => {
     try {
       const data = await mockLogin(email, password);
+
+      if (isTokenExpired(data.token)) {
+        return false;
+      }
+
       setToken(data.token);
       setUser(data.user);
       return true;
@@ -23,11 +34,28 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-  };
+  // 🔥 AUTO-LOGOUT EFFECT
+  useEffect(() => {
+    if (!token) return;
 
+    const decoded = decodeToken(token);
+    if (!decoded || !decoded.exp) {
+      logout();
+      return;
+    }
+
+    const timeout = decoded.exp - Date.now();
+
+    if (timeout <= 0) {
+      logout();
+      return;
+    }
+
+    const timer = setTimeout(logout, timeout);
+    return () => clearTimeout(timer);
+  }, [token]);
+
+  // Persist auth
   useEffect(() => {
     token
       ? localStorage.setItem("token", token)

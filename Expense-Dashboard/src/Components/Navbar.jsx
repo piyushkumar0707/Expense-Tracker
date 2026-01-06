@@ -30,6 +30,9 @@ function Navbar() {
           <button onClick={logout} className="logout-btn">
             Logout
           </button>
+
+          {!isAuth && <span style={{ color: "#f87171" }}>Session expired</span>}
+
         </div>
       )}
     </nav>
