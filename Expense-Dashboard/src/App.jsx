@@ -9,7 +9,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Routes>
+
+      {/* Layout Route */}
       <Route element={<AppLayout />}>
+
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -18,6 +22,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/expenses"
           element={
@@ -26,6 +31,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/reports"
           element={
@@ -34,9 +40,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+
       </Route>
+
+      {/* Public Route */}
       <Route path="/login" element={<Login />} />
+
     </Routes>
   );
 }
+
 export default App;

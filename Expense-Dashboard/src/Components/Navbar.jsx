@@ -1,28 +1,33 @@
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../auth/AuthContext";
+import ThemeContext from "../theme/ThemeContext";
 
 function Navbar() {
   const { isAuth, logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <nav style={{ background: "#1e293b", padding: 12 }}>
-      <NavLink to="/dashboard" style={{ color: "#fff", marginRight: 12 }}>
-        Dashboard
-      </NavLink>
-      <NavLink to="/expenses" style={{ color: "#fff", marginRight: 12 }}>
-        Expenses
-      </NavLink>
-      <NavLink to="/reports" style={{ color: "#fff", marginRight: 12 }}>
-        Reports
-      </NavLink>
+    <nav className="navbar">
+      <h2>Expense Tracker</h2>
 
-      {isAuth && (
-        <button onClick={logout} style={{ marginLeft: 12 }}>
-          Logout
+      <div className="nav-links">
+        <NavLink to="/dashboard">Dashboard</NavLink>
+        <NavLink to="/expenses">Expenses</NavLink>
+        <NavLink to="/reports">Reports</NavLink>
+
+        <button className="theme-btn" onClick={toggleTheme}>
+          {theme === "light" ? "🌙 Dark" : "☀️ Light"}
         </button>
-      )}
+
+        {isAuth && (
+          <button onClick={logout} className="logout-btn">
+            Logout
+          </button>
+        )}
+      </div>
     </nav>
   );
 }
+
 export default Navbar;

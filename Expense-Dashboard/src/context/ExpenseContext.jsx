@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useMemo } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 const ExpenseContext = createContext();
 
@@ -18,7 +18,6 @@ export function ExpenseProvider({ children }) {
   const deleteExpense = (id) =>
     setExpenses((prev) => prev.filter((e) => e.id !== id));
 
-  // memoize to avoid unnecessary re-renders
   const value = useMemo(
     () => ({ expenses, addExpense, deleteExpense }),
     [expenses]

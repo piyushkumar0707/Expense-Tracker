@@ -1,5 +1,5 @@
-import ExpenseForm from "../Components/ExpenseForm";
-import ExpenseList from "../Components/ExpenseList";
+import ExpenseForm from "../components/ExpenseForm";
+import ExpenseList from "../components/ExpenseList";
 
 function Expenses() {
   return (
@@ -10,4 +10,5 @@ function Expenses() {
     </>
   );
 }
+
 export default Expenses;

@@ -4,13 +4,17 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { ExpenseProvider } from "./context/ExpenseContext";
 import { AuthProvider } from "./auth/AuthContext";
+import { ThemeProvider } from "./theme/ThemeContext";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <AuthProvider>
-      <ExpenseProvider>
-        <App />
-      </ExpenseProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ExpenseProvider>
+          <App />
+        </ExpenseProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );

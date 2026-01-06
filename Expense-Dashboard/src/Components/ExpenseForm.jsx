@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import ExpenseContext from "../context/ExpenseContext";
 
 function ExpenseForm() {
@@ -9,22 +9,27 @@ function ExpenseForm() {
 
   const submit = () => {
     if (!title || !amount || !category) return;
+
     addExpense({
       id: Date.now(),
       title,
       amount: Number(amount),
       category
     });
-    setTitle(""); setAmount(""); setCategory("");
+
+    setTitle("");
+    setAmount("");
+    setCategory("");
   };
 
   return (
-    <>
+    <div className="card">
       <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Title" />
       <input value={amount} onChange={(e)=>setAmount(e.target.value)} placeholder="Amount" />
       <input value={category} onChange={(e)=>setCategory(e.target.value)} placeholder="Category" />
-      <button onClick={submit}>Add</button>
-    </>
+      <button onClick={submit}>Add Expense</button>
+    </div>
   );
 }
+
 export default ExpenseForm;
