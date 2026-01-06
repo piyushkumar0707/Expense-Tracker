@@ -4,28 +4,34 @@ import AuthContext from "../auth/AuthContext";
 import ThemeContext from "../theme/ThemeContext";
 
 function Navbar() {
-  const { isAuth, logout } = useContext(AuthContext);
+  const { isAuth, user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
     <nav className="navbar">
       <h2>Expense Tracker</h2>
 
-      <div className="nav-links">
-        <NavLink to="/dashboard">Dashboard</NavLink>
-        <NavLink to="/expenses">Expenses</NavLink>
-        <NavLink to="/reports">Reports</NavLink>
+      {isAuth && (
+        <div className="nav-links">
+          <NavLink to="/dashboard">Dashboard</NavLink>
 
-        <button className="theme-btn" onClick={toggleTheme}>
-          {theme === "light" ? "🌙 Dark" : "☀️ Light"}
-        </button>
+          {user.role === "user" && (
+            <NavLink to="/expenses">Expenses</NavLink>
+          )}
 
-        {isAuth && (
+          {user.role === "admin" && (
+            <NavLink to="/reports">Reports</NavLink>
+          )}
+
+          <button className="theme-btn" onClick={toggleTheme}>
+            {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+          </button>
+
           <button onClick={logout} className="logout-btn">
             Logout
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 }

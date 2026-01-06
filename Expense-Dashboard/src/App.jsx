@@ -9,43 +9,39 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Routes>
-
-      {/* Layout Route */}
       <Route element={<AppLayout />}>
-
-        {/* Protected Routes */}
+        {/* Admin + User */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "user"]}>
               <Dashboard />
             </ProtectedRoute>
           }
         />
 
+        {/* User only */}
         <Route
           path="/expenses"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["user"]}>
               <Expenses />
             </ProtectedRoute>
           }
         />
 
+        {/* Admin only */}
         <Route
           path="/reports"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <Reports />
             </ProtectedRoute>
           }
         />
-
       </Route>
 
-      {/* Public Route */}
       <Route path="/login" element={<Login />} />
-
     </Routes>
   );
 }
