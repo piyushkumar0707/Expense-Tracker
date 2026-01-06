@@ -9,7 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", authRoutes);
+console.log("Auth routes loaded");
+
+app.use("/api", authRoutes); // 🔥 THIS LINE IS CRITICAL
 
 app.get("/", (req, res) => {
   res.send("Backend running...");
