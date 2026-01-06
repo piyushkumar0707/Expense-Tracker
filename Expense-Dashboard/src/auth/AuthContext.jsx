@@ -19,20 +19,24 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    try {
-      const data = await mockLogin(email, password);
+  try {
+    const res = await fetch("http://localhost:8080/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
 
-      if (isTokenExpired(data.token)) {
-        return false;
-      }
+    if (!res.ok) return false;
 
-      setToken(data.token);
-      setUser(data.user);
-      return true;
-    } catch {
-      return false;
-    }
-  };
+    const data = await res.json();
+    setToken(data.token);
+    setUser(data.user);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 
   // 🔥 AUTO-LOGOUT EFFECT
   useEffect(() => {
