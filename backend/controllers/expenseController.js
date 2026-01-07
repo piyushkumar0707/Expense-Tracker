@@ -85,3 +85,27 @@ exports.deleteExpense = async (req, res) => {
 
   res.json({ message: "Expense deleted" });
 };
+
+
+exports.getExpenseStats = async (req, res) => {
+  const stats = await Expense.aggregate([
+    {
+      $group: {
+        _id: "$category",
+        totalAmount: { $sum: "$amount" },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        totalAmount: 1,
+        count: 1
+      }
+    }
+  ]);
+
+  res.json(stats);
+};
+
