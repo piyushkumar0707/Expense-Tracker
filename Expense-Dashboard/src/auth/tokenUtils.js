@@ -1,6 +1,12 @@
 export const decodeToken = (token) => {
   try {
-    return JSON.parse(atob(token));
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    // Convert exp from seconds to milliseconds
+    if (decoded.exp) {
+      decoded.exp = decoded.exp * 1000;
+    }
+    return decoded;
   } catch {
     return null;
   }

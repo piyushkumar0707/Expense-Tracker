@@ -1,26 +1,65 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import AuthContext from "../auth/AuthContext";
+import * as api from "../api/expenseService";
 
 const ExpenseContext = createContext();
 
 export function ExpenseProvider({ children }) {
-  const [expenses, setExpenses] = useState(() => {
-    const saved = localStorage.getItem("expenses");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { token } = useContext(AuthContext);
+
+  const [expenses, setExpenses] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const fetchExpenses = async () => {
+    if (!token) return;
+
+    setLoading(true);
+    const data = await api.getExpenses(token, {
+      page,
+      limit: 5,
+      ...filters
+    });
+
+    setExpenses(data.expenses);
+    setTotalPages(data.totalPages);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }, [expenses]);
+    fetchExpenses();
+  }, [token, page, filters]);
 
-  const addExpense = (expense) =>
-    setExpenses((prev) => [...prev, expense]);
+  const addExpense = async (expense) => {
+    await api.addExpense(token, expense);
+    fetchExpenses();
+  };
 
-  const deleteExpense = (id) =>
-    setExpenses((prev) => prev.filter((e) => e.id !== id));
+  const updateExpense = async (id, updates) => {
+    await api.updateExpense(token, id, updates);
+    fetchExpenses();
+  };
+
+  const deleteExpense = async (id) => {
+    await api.deleteExpense(token, id);
+    fetchExpenses();
+  };
 
   const value = useMemo(
-    () => ({ expenses, addExpense, deleteExpense }),
-    [expenses]
+    () => ({
+      expenses,
+      page,
+      totalPages,
+      setPage,
+      setFilters,
+      addExpense,
+      updateExpense,
+      deleteExpense,
+      loading
+    }),
+    [expenses, page, totalPages, loading]
   );
 
   return (

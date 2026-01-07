@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const users = require("../data/users");
+const User = require("../models/User");
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find(u => u.email === email);
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
@@ -17,7 +17,7 @@ exports.login = (req, res) => {
 
   const token = jwt.sign(
     {
-      id: user.id,
+      id: user._id,
       email: user.email,
       role: user.role
     },

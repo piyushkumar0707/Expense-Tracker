@@ -1,49 +1,87 @@
-const expenses = require("../data/expenses");
+const Expense = require("../models/Expense");
 
-exports.getExpenses = (req, res) => {
+exports.getExpenses = async (req, res) => {
   const userId = req.user.id;
 
-  const userExpenses = expenses.filter(
-    (expense) => expense.userId === userId
-  );
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+  const skip = (page - 1) * limit;
 
-  res.json(userExpenses);
+  const { category, minAmount, maxAmount } = req.query;
+
+  const filter = { userId };
+
+  if (category) {
+    filter.category = category;
+  }
+
+  if (minAmount || maxAmount) {
+    filter.amount = {};
+    if (minAmount) filter.amount.$gte = Number(minAmount);
+    if (maxAmount) filter.amount.$lte = Number(maxAmount);
+  }
+
+  const [expenses, total] = await Promise.all([
+    Expense.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+    Expense.countDocuments(filter)
+  ]);
+
+  res.json({
+    expenses,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
+  });
 };
 
-exports.addExpense = (req, res) => {
+
+exports.addExpense = async (req, res) => {
   const { title, amount, category } = req.body;
 
   if (!title || !amount || !category) {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const newExpense = {
-    id: Date.now(),
+  const expense = await Expense.create({
     title,
     amount,
     category,
-    userId: req.user.id,
-    createdAt: new Date()
-  };
+    userId: req.user.id
+  });
 
-  expenses.push(newExpense);
-
-  res.status(201).json(newExpense);
+  res.status(201).json(expense);
 };
 
-exports.deleteExpense = (req, res) => {
-  const expenseId = Number(req.params.id);
-  const userId = req.user.id;
+exports.updateExpense = async (req, res) => {
+  const { title, amount, category } = req.body;
 
-  const index = expenses.findIndex(
-    (e) => e.id === expenseId && e.userId === userId
-  );
+  const expense = await Expense.findOne({
+    _id: req.params.id,
+    userId: req.user.id
+  });
 
-  if (index === -1) {
+  if (!expense) {
     return res.status(404).json({ message: "Expense not found" });
   }
 
-  expenses.splice(index, 1);
+  if (title !== undefined) expense.title = title;
+  if (amount !== undefined) expense.amount = amount;
+  if (category !== undefined) expense.category = category;
+
+  await expense.save();
+
+  res.json(expense);
+};
+
+exports.deleteExpense = async (req, res) => {
+  const expense = await Expense.findOneAndDelete({
+    _id: req.params.id,
+    userId: req.user.id
+  });
+
+  if (!expense) {
+    return res.status(404).json({ message: "Expense not found" });
+  }
 
   res.json({ message: "Expense deleted" });
 };

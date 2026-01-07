@@ -3,7 +3,10 @@ import ExpenseContext from "../context/ExpenseContext";
 import ExpenseItem from "./ExpenseItem";
 
 function ExpenseList() {
-  const { expenses } = useContext(ExpenseContext);
+  const { expenses, loading, error } = useContext(ExpenseContext);
+
+  if (loading) return <p>Loading expenses...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div className="expense-grid">

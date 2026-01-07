@@ -9,7 +9,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const submit = async () => {
+  const submit = async (e) => {
+    e.preventDefault();
     const ok = await login(email, password);
     if (!ok) setError("Invalid credentials");
     else navigate("/dashboard", { replace: true });
@@ -19,20 +20,25 @@ function Login() {
     <div className="card page">
       <h1>Login</h1>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <form onSubmit={submit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+        />
 
-      <button onClick={submit}>Login</button>
+        <button type="submit">Login</button>
+      </form>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       <p>Use: test@example.com / 123456</p>

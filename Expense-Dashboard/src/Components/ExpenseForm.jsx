@@ -3,15 +3,15 @@ import ExpenseContext from "../context/ExpenseContext";
 
 function ExpenseForm() {
   const { addExpense } = useContext(ExpenseContext);
+
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!title || !amount || !category) return;
 
-    addExpense({
-      id: Date.now(),
+    await addExpense({
       title,
       amount: Number(amount),
       category
@@ -24,9 +24,21 @@ function ExpenseForm() {
 
   return (
     <div className="card">
-      <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Title" />
-      <input value={amount} onChange={(e)=>setAmount(e.target.value)} placeholder="Amount" />
-      <input value={category} onChange={(e)=>setCategory(e.target.value)} placeholder="Category" />
+      <input
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <input
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+      <input
+        placeholder="Category"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+      />
       <button onClick={submit}>Add Expense</button>
     </div>
   );
