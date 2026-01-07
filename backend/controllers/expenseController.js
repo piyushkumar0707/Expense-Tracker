@@ -118,3 +118,44 @@ exports.getExpenseStats = async (req, res) => {
 
   res.json(stats);
 };
+
+exports.getExpenseTrends = async (req, res) => {
+  const year = Number(req.query.year) || new Date().getFullYear();
+
+  const matchStage = {
+    createdAt: {
+      $gte: new Date(`${year}-01-01`),
+      $lte: new Date(`${year}-12-31`)
+    }
+  };
+
+  // User → only their data
+  if (req.user.role === "user") {
+    matchStage.userId = req.user.id;
+  }
+
+  const trends = await Expense.aggregate([
+    { $match: matchStage },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        totalAmount: { $sum: "$amount" }
+      }
+    },
+    { $sort: { "_id": 1 } }
+  ]);
+
+  // Ensure all months exist (Jan–Dec)
+  const monthlyData = Array.from({ length: 12 }, (_, i) => {
+    const found = trends.find(t => t._id === i + 1);
+    return {
+      month: i + 1,
+      totalAmount: found ? found.totalAmount : 0
+    };
+  });
+
+  res.json({
+    year,
+    monthlyData
+  });
+};

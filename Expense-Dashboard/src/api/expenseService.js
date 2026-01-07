@@ -73,3 +73,18 @@ export const getExpenseStats = async (token) => {
   if (!res.ok) throw new Error("Failed to fetch stats");
   return res.json();
 };
+
+
+export const getExpenseTrends = async (token, year) => {
+  const res = await fetch(
+    `http://localhost:8080/api/expense-trends?year=${year}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch trends");
+  return res.json();
+};

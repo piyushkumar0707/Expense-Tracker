@@ -1,22 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip
-} from "recharts";
 import AuthContext from "../auth/AuthContext";
-import { getExpenseStats } from "../api/expenseService";
-
-const COLORS = ["#3b82f6", "#22c55e", "#f97316", "#ef4444"];
+import { getExpenseTrends } from "../api/expenseService";
+import MonthlyTrendChart from "../components/MonthlyTrendChart";
 
 function Dashboard() {
   const { user, token } = useContext(AuthContext);
-  const [stats, setStats] = useState([]);
+  const [trendData, setTrendData] = useState([]);
 
   useEffect(() => {
-    getExpenseStats(token).then(setStats);
+    getExpenseTrends(token, new Date().getFullYear())
+      .then(res => setTrendData(res.monthlyData));
   }, [token]);
 
   return (
@@ -27,32 +20,7 @@ function Dashboard() {
           : "User Dashboard"}
       </h1>
 
-      {stats.length === 0 ? (
-        <p>No analytics available</p>
-      ) : (
-        <div className="card">
-          <h3>Expense Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={stats}
-                dataKey="totalAmount"
-                nameKey="category"
-                outerRadius={100}
-                label
-              >
-                {stats.map((_, i) => (
-                  <Cell
-                    key={i}
-                    fill={COLORS[i % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      <MonthlyTrendChart data={trendData} />
     </div>
   );
 }

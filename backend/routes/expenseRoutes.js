@@ -19,5 +19,13 @@ router.get(
   getExpenseStats
 );
 
+const { getExpenseTrends } = require("../controllers/expenseController");
+
+router.get(
+  "/expense-trends",
+  protect(["user", "admin"]),
+  getExpenseTrends
+);
+
 
 module.exports = router;
