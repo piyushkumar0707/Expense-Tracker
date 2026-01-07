@@ -60,10 +60,9 @@ export const deleteExpense = async (token, id) => {
   if (!res.ok) throw new Error("Failed to delete expense");
 };
 
-
 export const getExpenseStats = async (token) => {
   const res = await fetch(
-    "http://localhost:8080/api/admin/expense-stats",
+    "http://localhost:8080/api/expense-stats",
     {
       headers: {
         Authorization: `Bearer ${token}`

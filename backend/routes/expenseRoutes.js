@@ -14,9 +14,10 @@ router.post("/expenses", protect(["user"]), addExpense);
 router.put("/expenses/:id", protect(["user"]), updateExpense);
 router.delete("/expenses/:id", protect(["user"]), deleteExpense);
 router.get(
-  "/admin/expense-stats",
-  protect(["admin"]),
+  "/expense-stats",
+  protect(["user", "admin"]),
   getExpenseStats
 );
+
 
 module.exports = router;

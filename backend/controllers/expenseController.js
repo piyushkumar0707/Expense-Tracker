@@ -88,7 +88,17 @@ exports.deleteExpense = async (req, res) => {
 
 
 exports.getExpenseStats = async (req, res) => {
+  const matchStage = {};
+
+  // 👤 If user → only their data
+  if (req.user.role === "user") {
+    matchStage.userId = req.user.id;
+  }
+
+  // 👑 If admin → no filter (all data)
+
   const stats = await Expense.aggregate([
+    { $match: matchStage },
     {
       $group: {
         _id: "$category",
@@ -108,4 +118,3 @@ exports.getExpenseStats = async (req, res) => {
 
   res.json(stats);
 };
-
