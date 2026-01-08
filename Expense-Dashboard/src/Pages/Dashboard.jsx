@@ -4,8 +4,10 @@ import {
   getExpenseTrends,
   getYearlyExpenses
 } from "../api/expenseService";
-import MonthlyTrendChart from "../components/MonthlyTrendChart";
-import YearlyExpenseChart from "../components/YearlyExpenseChart";
+import MonthlyTrendChart from "../Components/MonthlyTrendChart";
+import YearlyExpenseChart from "../Components/YearlyExpenseChart";
+import BudgetCard from "../Components/BudgetCard";
+
 
 function Dashboard() {
   const { user, token } = useContext(AuthContext);
@@ -27,6 +29,7 @@ function Dashboard() {
           ? "Admin Dashboard"
           : "User Dashboard"}
       </h1>
+      <BudgetCard />
 
       <MonthlyTrendChart data={monthly} />
       <YearlyExpenseChart data={yearly} />

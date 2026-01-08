@@ -126,3 +126,29 @@ export const exportExpensesCSV = async (token) => {
   a.click();
   a.remove();
 };
+
+
+export const setBudget = async (token, monthlyLimit) => {
+  const res = await fetch("http://localhost:8080/api/budget", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ monthlyLimit })
+  });
+
+  if (!res.ok) throw new Error("Failed to set budget");
+  return res.json();
+};
+
+export const getBudgetStatus = async (token) => {
+  const res = await fetch("http://localhost:8080/api/budget", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch budget");
+  return res.json();
+};
