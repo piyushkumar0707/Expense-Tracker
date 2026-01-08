@@ -88,3 +88,41 @@ export const getExpenseTrends = async (token, year) => {
   if (!res.ok) throw new Error("Failed to fetch trends");
   return res.json();
 };
+
+export const getYearlyExpenses = async (token) => {
+  const res = await fetch(
+    "http://localhost:8080/api/expense-yearly",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch yearly data");
+  return res.json();
+};
+
+
+export const exportExpensesCSV = async (token) => {
+  const res = await fetch(
+    "http://localhost:8080/api/expenses/export",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  if (!res.ok) throw new Error("Failed to export CSV");
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "expenses.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};

@@ -159,3 +159,52 @@ exports.getExpenseTrends = async (req, res) => {
     monthlyData
   });
 };
+
+exports.getYearlyExpenses = async (req, res) => {
+  const matchStage = {};
+
+  // User → only their data
+  if (req.user.role === "user") {
+    matchStage.userId = req.user.id;
+  }
+
+  const yearlyData = await Expense.aggregate([
+    { $match: matchStage },
+    {
+      $group: {
+        _id: { $year: "$createdAt" },
+        totalAmount: { $sum: "$amount" }
+      }
+    },
+    { $sort: { "_id": 1 } }
+  ]);
+
+  const formatted = yearlyData.map(item => ({
+    year: item._id,
+    totalAmount: item.totalAmount
+  }));
+
+  res.json(formatted);
+};
+
+
+exports.exportExpensesCSV = async (req, res) => {
+  const filter = {};
+
+  // User → only their data
+  if (req.user.role === "user") {
+    filter.userId = req.user.id;
+  }
+
+  const expenses = await Expense.find(filter).sort({ createdAt: -1 });
+
+  let csv = "Title,Amount,Category,Date\n";
+
+  expenses.forEach((e) => {
+    csv += `"${e.title}",${e.amount},"${e.category}","${e.createdAt.toISOString()}"\n`;
+  });
+
+  res.header("Content-Type", "text/csv");
+  res.attachment("expenses.csv");
+  res.send(csv);
+};

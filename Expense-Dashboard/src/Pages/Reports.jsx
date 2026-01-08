@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import AuthContext from "../auth/AuthContext";
 import { getExpenseStats } from "../api/expenseService";
+import ExportButton from "../Components/ExportButton";
 
 const COLORS = ["#3b82f6", "#22c55e", "#f97316", "#ef4444"];
 
@@ -72,8 +73,15 @@ function Reports() {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+       <div className="page">
+      <h1>Reports</h1>
+      <ExportButton />
+      {/* charts already here */}
+    </div>
     </div>
   );
 }
+
 
 export default Reports;
