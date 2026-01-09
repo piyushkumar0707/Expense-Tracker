@@ -11,7 +11,7 @@ function ExpenseList() {
   return (
     <div className="expense-grid">
       {expenses.map((e) => (
-        <ExpenseItem key={e.id} expense={e} />
+        <ExpenseItem key={e._id} expense={e} />
       ))}
     </div>
   );

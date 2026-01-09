@@ -8,7 +8,9 @@ function BudgetCard() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    getBudgetStatus(token).then(setData);
+    getBudgetStatus(token)
+      .then(setData)
+      .catch(() => setData({ monthlyLimit: 0, spent: 0, percentage: 0 }));
   }, [token]);
 
   const save = async () => {
@@ -18,7 +20,7 @@ function BudgetCard() {
     setLimit("");
   };
 
-  if (!data) return null;
+  if (!data) return <div>Loading budget...</div>;
 
   return (
     <div className="card">

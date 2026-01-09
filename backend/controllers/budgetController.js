@@ -1,5 +1,6 @@
 const Budget = require("../models/Budget");
 const Expense = require("../models/Expense");
+const mongoose = require("mongoose");
 
 exports.setBudget = async (req, res) => {
   const { monthlyLimit } = req.body;
@@ -9,7 +10,7 @@ exports.setBudget = async (req, res) => {
   }
 
   const budget = await Budget.findOneAndUpdate(
-    { userId: req.user.id },
+    { userId: new mongoose.Types.ObjectId(req.user.id) },
     { monthlyLimit },
     { upsert: true, new: true }
   );
@@ -21,12 +22,12 @@ exports.getBudgetStatus = async (req, res) => {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const budget = await Budget.findOne({ userId: req.user.id });
+  const budget = await Budget.findOne({ userId: new mongoose.Types.ObjectId(req.user.id) });
 
   const totalSpent = await Expense.aggregate([
     {
       $match: {
-        userId: req.user.id,
+        userId: new mongoose.Types.ObjectId(req.user.id),
         createdAt: { $gte: start }
       }
     },
